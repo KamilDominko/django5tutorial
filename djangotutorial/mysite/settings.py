@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",  # Framework dla sesji
     "django.contrib.messages",  # Framework dla powiadomień
     "django.contrib.staticfiles",  # Framework do zarządzania plikami statystycznymi
-    "polls.apps.PollsConfig",
+    # "polls.apps.PollsConfig",
     "debug_toolbar",  # 3th-party toolbar
+    "django_polls.apps.PollsConfig",
 ]
 
 MIDDLEWARE = [
