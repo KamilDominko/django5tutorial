@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.db.models import F
 from django.urls import reverse
 from django.views import generic
+from django.utils import timezone
 
 
 class IndexView(generic.ListView):
@@ -13,17 +14,37 @@ class IndexView(generic.ListView):
     context_object_name = "latest_question_list"
 
     def get_queryset(self):
-        return Question.objects.order_by("-pub_date")[:5]
+        # return Question.objects.order_by("-pub_date")[:5]
+        # __lte to skrót od: Less Than or Equal
+        return Question.objects.filter(pub_date__lte=timezone.now()).order_by(
+            "-pub_date"
+        )[:5]
 
 
 class DetailView(generic.DetailView):
     model = Question
     template_name = "polls/detail.html"
 
+    def get_queryset(self):
+        """Wyklucza pytania, które nie zostały jeszcze opublikowane.
+
+        Returns:
+            list: nieopublikowane pytania
+        """
+        return Question.objects.filter(pub_date__lte=timezone.now())
+
 
 class ResultsView(generic.DetailView):
     model = Question
     template_name = "polls/results.html"
+
+    def get_queryset(self):
+        """Ogranicza widok wyników do pytań już opublikowanych.
+
+        Returns:
+            list: lista opublikowanych pytań
+        """
+        return Question.objects.filter(pub_date__lte=timezone.now())
 
 
 def vote(request, question_id):
